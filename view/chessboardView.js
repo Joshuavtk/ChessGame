@@ -1,18 +1,18 @@
 /*
-    The view handels all methods and data that go to the user.
+    The view displays all methods and data.
 */
-
 const chessboardView = {};
 
 chessboardView.init = () => {
     const chessboard = document.createElement("div");
+    let wrapper = document.getElementById("wrapper");
     chessboard.id = "chessboard";
-    document.body.appendChild(chessboard);
+    wrapper.appendChild(chessboard);
 
     //Showing horizontal rows
     //let rowName = chessboardModel.getRows();
-    let files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; // Horizontal rows
-    let ranks = [1, 2, 3, 4, 5, 6, 7, 8]; // Vertical rows
+    let files = chessboardModel.files; // Horizontal rows
+    let ranks = chessboardModel.ranks; // Vertical rows
 
     for (let i = 0; i < files.length; i++) {
         let file = document.createElement("div");
@@ -26,15 +26,19 @@ chessboardView.init = () => {
 
         for (let z = 0; z < ranks.length; z++) {
             let rank = document.createElement("div");
-            rank.id = "rank_" + ranks[z];
+            rank.id = file.id + "-rank_" + ranks[z];
             rank.style.position = "absolute";
             rank.style.bottom = z * 100 + "px";
             rank.style.left = "0px";
             rank.style.height = "100px";
             rank.style.width = "100px";
+            if (z % 2 === 0 && i % 2 === 0 || z % 2 === 1 && i % 2 === 1) {
+                rank.style.backgroundColor = "#07a207";
+            } else {
+                rank.style.backgroundColor = "#efef7f";
+            }
+            rank.onclick = "chessboardModel.movePiece(" + rank.className + ")";
             document.getElementById("file_" + files[i]).appendChild(rank);
         }
     }
 };
-
-

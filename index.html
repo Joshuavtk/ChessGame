@@ -9,21 +9,48 @@
         #chessboard {
             height: 800px;
             width: 800px;
-            background-image: url(afb/Chess_Board2.svg.png);
-            background-size: cover;
+            font-size: 80px;
+            text-align: center;
+            line-height: 110px;
         }
+
+        #chessboard>div>div:hover {
+            cursor: default;
+        }
+
+        #chessboard ::selection {
+            background-color: transparent;
+        }
+
+        #sidebar {
+            width: 400px;
+            height: 800px;
+            background-color: lightgreen;
+            overflow: scroll;
+        }
+
         body, html {
             padding: 0;
             margin: 0;
+            background-color: #eeeeee;
+            display: flex;
         }
     </style>
     <title>Chess game</title>
     <script src="model/chessboardModel.js"></script>
     <script src="view/chessboardView.js"></script>
+    <script src="view/chesspieceView.js"></script>
     <script src="controller/chessboard.js"></script>
 </head>
 
 <body>
+    <div id="wrapper">
+
+    </div>
+    <div id="sidebar">
+        <h1>Info:</h1>
+        <p id="gameInfo"></p>
+    </div>
 </body>
 
 </html>
