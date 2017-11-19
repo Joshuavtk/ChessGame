@@ -37,7 +37,7 @@ chessboardView.init = () => {
             } else {
                 rank.style.backgroundColor = "#efef7f";
             }
-            rank.onclick = () => { chessboardModel.selectPiece(rank.className) };
+            rank.onclick = () => { chessboardModel.selectPiece(rank.className, rank.id) };
             document.getElementById("file_" + files[i]).appendChild(rank);
         }
     }

@@ -28,6 +28,7 @@ chessboardModel.init = () => {
   chessboardModel.selectedPiece = "";
 
   chessboardModel.player = 'white';
+  document.getElementById("gameInfo").innerHTML += "You're playing as " + chessboardModel.player + '<br>';
 
   class chessPiece {
     constructor(brand) {
@@ -193,16 +194,15 @@ chessboardModel.init = () => {
       chessboardModel.blackPawn[i] = new Pawn(i, 'black', chessboardModel.files[i], 7);
     }
   }
-  chessboardModel.selectPiece = (pieceClassName) => {
-    console.log(pieceClassName);
-    pieceName = [];
-    pieceName = pieceClassName.split(" ");
-    console.log(pieceName);
+  chessboardModel.selectPiece = (pieceClassName, pieceNextPosition) => {
+    //console.log(pieceNextPosition);
+    let pieceName = [];
+    pieceName = pieceClassName.split(" "); // piece name, num
     if (chessboardModel.selectedPiece === "") {
       if (pieceName[0]) {
-        if (chessboardModel[pieceName][0].color === chessboardModel.player) {
+        if (chessboardModel[pieceName[0]][pieceName[1]].color === chessboardModel.player) { // check if not the same color
           chessboardModel.selectedPiece = pieceName;
-          console.log('selected a piece ' + chessboardModel.selectedPiece);
+          //console.log('selected a piece ' + chessboardModel.selectedPiece);
         } else {
           console.log('wrong color');
         }
@@ -211,23 +211,27 @@ chessboardModel.init = () => {
       }
     } else {
       if (pieceName[0]) {
-
-        if (!chessboardModel[pieceName].color === chessboardModel.player) {
-          chessboardModel.movePiece();
+        //console.log(chessboardModel[pieceName[0]][pieceName[1]].color);
+        if (chessboardModel[pieceName[0]][pieceName[1]].color !== chessboardModel.player) {
+          chessboardModel.movePiece(pieceNextPosition);
+          console.log("You've slain an enemy piece");
         } else {
           chessboardModel.selectedPiece = "";
           console.log('clicked on your own color');
         }
-        console.log(chessboardModel.selectedPiece);
+        //console.log(chessboardModel.selectedPiece);
       } else {
-        chessboardModel.movePiece();
+        chessboardModel.movePiece(pieceNextPosition);
       }
     }
   }
 
-  chessboardModel.movePiece = () => {
-    // chessboardModel.selectedPiece.updatePosition('F', 5);
-    // chessboardModel.selectedPiece.currentPosition();
-    console.log('Initiated movePiece()' + chessboardModel.selectedPiece);
+  chessboardModel.movePiece = (pieceNextPosition) => {
+    pieceNextPosition = pieceNextPosition.split("-");
+    pieceNextPosition[0] = pieceNextPosition[0].replace('file_','');
+    pieceNextPosition[1] = pieceNextPosition[1].replace('rank_','');
+    chessboardModel[chessboardModel.selectedPiece[0]][chessboardModel.selectedPiece[1]].updatePosition(pieceNextPosition[0], pieceNextPosition[1]);
+    //console.log('Initiated movePiece() with ' + chessboardModel[chessboardModel.selectedPiece[0]][chessboardModel.selectedPiece[1]]);
+    chessboardModel.selectedPiece = "";
   }
 };
