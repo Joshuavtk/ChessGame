@@ -7,5 +7,4 @@ const chesspieceView = {};
 chesspieceView.init = () => {
     chessboardModel.initBoard();
 
-    chessboardModel.movePiece();
 };

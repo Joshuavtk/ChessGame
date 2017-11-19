@@ -25,8 +25,13 @@ chessboardModel.init = () => {
     'Pawn': '♙'
   };
 
+  chessboardModel.selectedPiece = "";
+
+  chessboardModel.player = 'white';
+
   class chessPiece {
     constructor(brand) {
+      this.num = '';
       this.color = '';
       this.piece = '';
       this.file = '';
@@ -45,18 +50,21 @@ chessboardModel.init = () => {
     }
     updatePosition(file, rank) {
       document.getElementById('file_' + this.file + '-' + 'rank_' + this.rank).innerHTML = "";
+      document.getElementById('file_' + this.file + '-' + 'rank_' + this.rank).className = "";
       this.file = file;
       this.rank = rank;
       this.position = 'file_' + this.file + '-' + 'rank_' + this.rank;
       document.getElementById("gameInfo").innerHTML += ('Moved ' + this.color + ' ' + this.piece + ' to spot: ' + this.position + '<br>');
       this.place = document.getElementById(this.position);
+      document.getElementById(this.position).className = this.color + this.piece + ' ' + this.num;
       this.place.innerHTML = this.appearance;
     }
   }
 
   class Rook extends chessPiece {
-    constructor(color, file, rank) {
+    constructor(num, color, file, rank) {
       super();
+      this.num = num;
       this.color = color;
       this.piece = 'Rook';
       this.defineColor();
@@ -67,8 +75,9 @@ chessboardModel.init = () => {
   }
 
   class Knight extends chessPiece {
-    constructor(color, file, rank) {
+    constructor(num, color, file, rank) {
       super();
+      this.num = num;
       this.color = color;
       this.piece = 'Knight';
       this.defineColor();
@@ -79,8 +88,9 @@ chessboardModel.init = () => {
   }
 
   class Bishop extends chessPiece {
-    constructor(color, file, rank) {
+    constructor(num, color, file, rank) {
       super();
+      this.num = num;
       this.color = color;
       this.piece = 'Bishop';
       this.defineColor();
@@ -91,8 +101,9 @@ chessboardModel.init = () => {
   }
 
   class Queen extends chessPiece {
-    constructor(color, file, rank) {
+    constructor(num, color, file, rank) {
       super();
+      this.num = num;
       this.color = color;
       this.piece = 'Queen';
       this.defineColor();
@@ -103,8 +114,9 @@ chessboardModel.init = () => {
   }
 
   class King extends chessPiece {
-    constructor(color, file, rank) {
+    constructor(num, color, file, rank) {
       super();
+      this.num = num;
       this.color = color;
       this.piece = 'King';
       this.defineColor();
@@ -115,8 +127,9 @@ chessboardModel.init = () => {
   }
 
   class Pawn extends chessPiece {
-    constructor(color, file, rank) {
+    constructor(num, color, file, rank) {
       super();
+      this.num = num;
       this.color = color;
       this.piece = 'Pawn';
       this.defineColor();
@@ -129,58 +142,92 @@ chessboardModel.init = () => {
   chessboardModel.initBoard = () => {
 
     //Create white Rooks
-    chessboardModel.whiteRooks = [];
-    chessboardModel.whiteRooks[0] = new Rook('white', 'A', 1);
-    chessboardModel.whiteRooks[1] = new Rook('white', 'H', 1);
+    chessboardModel.whiteRook = [];
+    chessboardModel.whiteRook[0] = new Rook(0, 'white', 'A', 1);
+    chessboardModel.whiteRook[1] = new Rook(1, 'white', 'H', 1);
     //Create black Rooks
-    chessboardModel.blackRooks = [];
-    chessboardModel.blackRooks[0] = new Rook('black', 'A', 8);
-    chessboardModel.blackRooks[1] = new Rook('black', 'H', 8);
+    chessboardModel.blackRook = [];
+    chessboardModel.blackRook[0] = new Rook(0, 'black', 'A', 8);
+    chessboardModel.blackRook[1] = new Rook(1, 'black', 'H', 8);
 
     //Create white Knights
-    chessboardModel.whiteKnights = [];
-    chessboardModel.whiteKnights[0] = new Knight('white', 'B', 1);
-    chessboardModel.whiteKnights[1] = new Knight('white', 'G', 1);
+    chessboardModel.whiteKnight = [];
+    chessboardModel.whiteKnight[0] = new Knight(0, 'white', 'B', 1);
+    chessboardModel.whiteKnight[1] = new Knight(1, 'white', 'G', 1);
     //Create black Knights
-    chessboardModel.blackKnights = [];
-    chessboardModel.blackKnights[0] = new Knight('black', 'B', 8);
-    chessboardModel.blackKnights[1] = new Knight('black', 'G', 8);
+    chessboardModel.blackKnight = [];
+    chessboardModel.blackKnight[0] = new Knight(0, 'black', 'B', 8);
+    chessboardModel.blackKnight[1] = new Knight(1, 'black', 'G', 8);
 
     //Create white bishops
-    chessboardModel.whiteBishops = [];
-    chessboardModel.whiteBishops[0] = new Bishop('white', 'C', 1);
-    chessboardModel.whiteBishops[1] = new Bishop('white', 'F', 1);
+    chessboardModel.whiteBishop = [];
+    chessboardModel.whiteBishop[0] = new Bishop(0, 'white', 'C', 1);
+    chessboardModel.whiteBishop[1] = new Bishop(1, 'white', 'F', 1);
     //Create black bishops
-    chessboardModel.blackBishops = [];
-    chessboardModel.blackBishops[0] = new Bishop('black', 'C', 8);
-    chessboardModel.blackBishops[1] = new Bishop('black', 'F', 8);
+    chessboardModel.blackBishop = [];
+    chessboardModel.blackBishop[0] = new Bishop(0, 'black', 'C', 8);
+    chessboardModel.blackBishop[1] = new Bishop(1, 'black', 'F', 8);
 
     //Create white queen
-    chessboardModel.whiteQueen = new Queen('white', 'D', 1);
+    chessboardModel.whiteQueen = [];
+    chessboardModel.whiteQueen[0] = new Queen(0, 'white', 'D', 1);
     //Create black queen
-    chessboardModel.blackQueen = new Queen('black', 'D', 8);
+    chessboardModel.blackQueen = [];
+    chessboardModel.blackQueen[0] = new Queen(0, 'black', 'D', 8);
 
     //Create white king
-    chessboardModel.whiteKing = new King('white', 'E', 1);
+    chessboardModel.whiteKing = [];
+    chessboardModel.whiteKing[0] = new King(0, 'white', 'E', 1);
     //Create black king
-    chessboardModel.blackKing = new King('black', 'E', 8);
+    chessboardModel.blackKing = [];
+    chessboardModel.blackKing[0] = new King(0, 'black', 'E', 8);
 
     //Create white pawns
-    chessboardModel.whitePawns = [];
+    chessboardModel.whitePawn = [];
     for (let i = 0; i < 8; i++) {
-      chessboardModel.whitePawns[i] = new Pawn('white', chessboardModel.files[i], 2);
+      chessboardModel.whitePawn[i] = new Pawn(i, 'white', chessboardModel.files[i], 2);
     }
     //Create black pawns
-    chessboardModel.blackPawns = [];
+    chessboardModel.blackPawn = [];
     for (let i = 0; i < 8; i++) {
-      chessboardModel.blackPawns[i] = new Pawn('black', chessboardModel.files[i], 7);
+      chessboardModel.blackPawn[i] = new Pawn(i, 'black', chessboardModel.files[i], 7);
+    }
+  }
+  chessboardModel.selectPiece = (pieceClassName) => {
+    console.log(pieceClassName);
+    pieceName = [];
+    pieceName = pieceClassName.split(" ");
+    console.log(pieceName);
+    if (chessboardModel.selectedPiece === "") {
+      if (pieceName[0]) {
+        if (chessboardModel[pieceName][0].color === chessboardModel.player) {
+          chessboardModel.selectedPiece = pieceName;
+          console.log('selected a piece ' + chessboardModel.selectedPiece);
+        } else {
+          console.log('wrong color');
+        }
+      } else {
+        console.log('Stop clicking the board');
+      }
+    } else {
+      if (pieceName[0]) {
+
+        if (!chessboardModel[pieceName].color === chessboardModel.player) {
+          chessboardModel.movePiece();
+        } else {
+          chessboardModel.selectedPiece = "";
+          console.log('clicked on your own color');
+        }
+        console.log(chessboardModel.selectedPiece);
+      } else {
+        chessboardModel.movePiece();
+      }
     }
   }
 
-  chessboardModel.movePiece = (pieceName) => {
-    let piece = chessboardModel.whiteBishops[1];
-    piece.updatePosition('F', 5);
-    piece.currentPosition();
-
+  chessboardModel.movePiece = () => {
+    // chessboardModel.selectedPiece.updatePosition('F', 5);
+    // chessboardModel.selectedPiece.currentPosition();
+    console.log('Initiated movePiece()' + chessboardModel.selectedPiece);
   }
 };
