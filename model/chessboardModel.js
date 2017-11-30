@@ -31,6 +31,7 @@ chessboardModel.init = () => {
   document.getElementById("gameInfo").innerHTML += "You're playing as " + chessboardModel.player + '<br>';
 
   class chessPiece {
+
     constructor(brand) {
       this.num = '';
       this.color = '';
@@ -38,6 +39,7 @@ chessboardModel.init = () => {
       this.file = '';
       this.rank = '';
     }
+
     defineColor() {
       if (this.color == 'white') {
         this.appearance = chessboardModel.whitePieces[this.piece];
@@ -45,10 +47,12 @@ chessboardModel.init = () => {
         this.appearance = chessboardModel.blackPieces[this.piece];
       }
     }
+
     currentPosition() {
       console.log('The position of ' + this.color + ' ' + this.piece +
         ' is file ' + this.file + ' and rank ' + this.rank)
     }
+
     updatePosition(file, rank) {
       document.getElementById('file_' + this.file + '-' + 'rank_' + this.rank).innerHTML = "";
       document.getElementById('file_' + this.file + '-' + 'rank_' + this.rank).className = "";
@@ -60,6 +64,11 @@ chessboardModel.init = () => {
       document.getElementById(this.position).className = this.color + this.piece + ' ' + this.num;
       this.place.innerHTML = this.appearance;
     }
+
+    showPossiblePath() {
+      console.log("Piece: " + this.piece + "[" + this.num + "] can be moved to spot: ");
+    }
+
   }
 
   class Rook extends chessPiece {
@@ -198,11 +207,12 @@ chessboardModel.init = () => {
     //console.log(pieceNextPosition);
     let pieceName = [];
     pieceName = pieceClassName.split(" "); // piece name, num
-    if (chessboardModel.selectedPiece === "") {
+    if (chessboardModel.selectedPiece === "") { // Not yet selected a piece
       if (pieceName[0]) {
         if (chessboardModel[pieceName[0]][pieceName[1]].color === chessboardModel.player) { // check if not the same color
           chessboardModel.selectedPiece = pieceName;
           //console.log('selected a piece ' + chessboardModel.selectedPiece);
+          chessboardModel[pieceName[0]][pieceName[1]].showPossiblePath();
         } else {
           console.log('wrong color');
         }
@@ -210,7 +220,7 @@ chessboardModel.init = () => {
         console.log('Stop clicking the board');
       }
     } else {
-      if (pieceName[0]) {
+      if (pieceName[0]) { // Already selected a piece
         //console.log(chessboardModel[pieceName[0]][pieceName[1]].color);
         if (chessboardModel[pieceName[0]][pieceName[1]].color !== chessboardModel.player) {
           chessboardModel.movePiece(pieceNextPosition);
@@ -228,8 +238,8 @@ chessboardModel.init = () => {
 
   chessboardModel.movePiece = (pieceNextPosition) => {
     pieceNextPosition = pieceNextPosition.split("-");
-    pieceNextPosition[0] = pieceNextPosition[0].replace('file_','');
-    pieceNextPosition[1] = pieceNextPosition[1].replace('rank_','');
+    pieceNextPosition[0] = pieceNextPosition[0].replace('file_', '');
+    pieceNextPosition[1] = pieceNextPosition[1].replace('rank_', '');
     chessboardModel[chessboardModel.selectedPiece[0]][chessboardModel.selectedPiece[1]].updatePosition(pieceNextPosition[0], pieceNextPosition[1]);
     //console.log('Initiated movePiece() with ' + chessboardModel[chessboardModel.selectedPiece[0]][chessboardModel.selectedPiece[1]]);
     chessboardModel.selectedPiece = "";
