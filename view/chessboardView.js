@@ -37,8 +37,28 @@ chessboardView.init = () => {
             } else {
                 rank.style.backgroundColor = "#efef7f";
             }
-            rank.onclick = () => { chessboardModel.selectPiece(rank.className, rank.id) };
+            rank.onclick = () => {
+                chessboardModel.selectPiece(rank.className, rank.id)
+            };
             document.getElementById("file_" + files[i]).appendChild(rank);
         }
+
+        let fileLabel = document.createElement("div");
+        fileLabel.className = "fileLabel";
+        fileLabel.style.position = "absolute";
+        fileLabel.style.left = i * 100 + "px";
+        fileLabel.style.width = "100px";
+        fileLabel.style.top = "800px";
+        fileLabel.innerHTML = files[i];
+        document.getElementById("chessboard").appendChild(fileLabel);
+
+        let rankLabel = document.createElement("div");
+        rankLabel.className = "rankLabel";
+        rankLabel.style.position = "absolute";
+        rankLabel.style.top = i * 100 + "px";
+        rankLabel.style.width = "100px";
+        rankLabel.style.left = "800px";
+        rankLabel.innerHTML = 8 - i;
+        document.getElementById("chessboard").appendChild(rankLabel);
     }
 };

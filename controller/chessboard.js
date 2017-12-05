@@ -5,12 +5,11 @@
 const chessboardController = {};
 
 chessboardController.init = () => {
-    console.log("Init chessboard");
     chessboardModel.init();
     chessboardView.init();
     chesspieceView.init();
-    
-}
+
+};
 
 addEventListener("load", chessboardController.init);
 

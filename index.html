@@ -7,26 +7,49 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
         #chessboard {
-            height: 800px;
-            width: 800px;
+            height: 900px;
+            width: 900px;
             font-size: 80px;
             text-align: center;
             line-height: 110px;
         }
 
-        #chessboard>div>div:hover {
-            cursor: default;
+        #chessboard > div > div:hover {
+            cursor: pointer;
         }
 
         #chessboard ::selection {
             background-color: transparent;
         }
 
+        #chessboard ::-moz-selection {
+            background-color: transparent;
+        }
+
         #sidebar {
-            width: 400px;
+            width: 260px;
             height: 800px;
             background-color: lightgreen;
             overflow-y: scroll;
+            padding: 0 20px;
+        }
+
+        #gameInfo {
+            font-size: 110%;
+        }
+
+        .fileLabel {
+            font-size: 22px;
+            font-weight: bold;
+            line-height: initial;
+            text-align: center;
+        }
+
+        .rankLabel {
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 100px;
+            text-align: left;
         }
 
         body, html {
@@ -44,13 +67,13 @@
 </head>
 
 <body>
-    <div id="wrapper">
+<div id="wrapper">
 
-    </div>
-    <div id="sidebar">
-        <h1>Info:</h1>
-        <p id="gameInfo"></p>
-    </div>
+</div>
+<div id="sidebar">
+    <h1>Info:</h1>
+    <p id="gameInfo"></p>
+</div>
 </body>
 
 </html>
