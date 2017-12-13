@@ -33,9 +33,9 @@ chessboardView.init = () => {
             rank.style.height = "100px";
             rank.style.width = "100px";
             if (z % 2 === 0 && i % 2 === 0 || z % 2 === 1 && i % 2 === 1) {
-                rank.style.backgroundColor = "#07a207";
+                rank.style.backgroundColor = "rgb(7, 162, 7)";
             } else {
-                rank.style.backgroundColor = "#efef7f";
+                rank.style.backgroundColor = "rgb(239, 239, 127)";
             }
             rank.onclick = () => {
                 chessboardModel.selectPiece(rank.className, rank.id)

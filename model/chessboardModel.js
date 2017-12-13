@@ -9,26 +9,28 @@ chessboardModel.init = () => {
     chessboardModel.ranks = [1, 2, 3, 4, 5, 6, 7, 8]; // Vertical rows
 
     chessboardModel.blackPieces = {
-        'Rook': '♜',
-        'Knight': '♞',
-        'Bishop': '♝',
-        'Queen': '♛',
-        'King': '♚',
-        'Pawn': '♟'
+        Rook: '♜',
+        Knight: '♞',
+        Bishop: '♝',
+        Queen: '♛',
+        King: '♚',
+        Pawn: '♟'
     };
     chessboardModel.whitePieces = {
-        'Rook': '♖',
-        'Knight': '♘',
-        'Bishop': '♗',
-        'Queen': '♕',
-        'King': '♔',
-        'Pawn': '♙'
+        Rook: '♖',
+        Knight: '♘',
+        Bishop: '♗',
+        Queen: '♕',
+        King: '♔',
+        Pawn: '♙'
     };
 
     // Global Variables
     chessboardModel.selectedPiece = "";
     chessboardModel.selectedPlaceColor = "";
     chessboardModel.selectedPlace = "";
+    chessboardModel.possiblePathPlace = [];
+    chessboardModel.possiblePathPlaceColor = [];
 
     // Your side
     chessboardModel.player = 'white';
@@ -78,17 +80,66 @@ chessboardModel.init = () => {
         }
 
         highlightPlace() {
+            // Save current background color
             chessboardModel.selectedPlaceColor = document.getElementById(this.position).style.backgroundColor;
+
+            // Save the position of the spot that has that background color
             chessboardModel.selectedPlace = this.position;
+
+            // Give new background color
             document.getElementById(this.position).style.backgroundColor = "rgb(114, 111, 224)";
         }
 
         resetBackgroundColor() {
+            // Revert background color of piece's position
             document.getElementById(chessboardModel.selectedPlace).style.backgroundColor = chessboardModel.selectedPlaceColor;
+
+            // Revert background color of piece's path
+            for (let i = 1; i < chessboardModel.possiblePathPlace.length; i++) {
+                let backgroundResetElement = document.getElementById(chessboardModel.possiblePathPlace[i]);
+                backgroundResetElement.style.backgroundColor = chessboardModel.possiblePathPlaceColor[i];
+            }
         }
 
         showPossiblePath() {
-            console.log("Piece: " + this.piece + "[" + this.num + "] can be moved to spot: ");
+            // Determining the file position
+            let fileArrayPosition = "";
+            for (let i = 0; i < chessboardModel.files.length; i++) {
+                if (chessboardModel.files[i] === this.file) {
+                    fileArrayPosition = i;
+                    break;
+                }
+            }
+
+            if (this.moveSet.forward) {
+                for (let i = 1; i <= this.moveSet.forward; i++) {
+                    let possibleRank = parseInt(this.rank) + i;
+                    if (possibleRank <= 8) {
+                        let possiblePosition = 'file_' + this.file + '-rank_' + possibleRank;
+                        let possiblePositionElement = document.getElementById(possiblePosition);
+
+                        if (possiblePositionElement.className === "") { // Path is empty
+                            chessboardModel.showPath(i, possiblePositionElement, possiblePosition);
+                        } else { // Piece is on path
+                            let possiblePositionPiece = possiblePositionElement.className.split(" ");
+                            possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
+
+                            if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
+                                chessboardModel.showPath(i, possiblePositionElement, possiblePosition);
+                                break;
+                            } else { // Allied piece on path
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (this.moveSet.backward) {
+
+            }
+
+
         }
 
     }
@@ -143,6 +194,9 @@ chessboardModel.init = () => {
             this.file = file;
             this.rank = rank;
             this.updatePosition(this.file, this.rank);
+            this.moveSet = {
+                forward: 8
+            }
         }
     }
 
@@ -156,6 +210,9 @@ chessboardModel.init = () => {
             this.file = file;
             this.rank = rank;
             this.updatePosition(this.file, this.rank);
+            this.moveSet = {
+
+            }
         }
     }
 
@@ -169,6 +226,9 @@ chessboardModel.init = () => {
             this.file = file;
             this.rank = rank;
             this.updatePosition(this.file, this.rank);
+            this.moveSet = {
+                forward: 2
+            }
         }
     }
 
@@ -242,14 +302,14 @@ chessboardModel.init = () => {
                 if (currentPiece.color === chessboardModel.player) {
                     chessboardModel.selectedPiece = pieceName;
                     currentPiece.highlightPlace();
-                    //currentPiece.showPossiblePath();
+                    currentPiece.showPossiblePath();
                 } else {
                     console.log('You tried to move the opponent\'s piece.');
                 }
             } else {
                 console.log('Select a piece first.');
             }
-        } else {
+        } else { // Already selected a piece
             let movingPiece = chessboardModel[chessboardModel.selectedPiece[0]][chessboardModel.selectedPiece[1]];
             if (pieceName[0]) {
                 if (currentPiece.color !== chessboardModel.player) {
@@ -272,11 +332,24 @@ chessboardModel.init = () => {
     };
 
     chessboardModel.movePiece = (pieceNextPosition, movingPiece) => {
+        console.log(chessboardModel.possiblePathPlace);
+        for (let i; i < chessboardModel.possiblePathPlace.length; i++) {
+            chessboardModel.possiblePathPlace[i];
+        }
         pieceNextPosition = pieceNextPosition.split("-");
         pieceNextPosition[0] = pieceNextPosition[0].replace('file_', '');
         pieceNextPosition[1] = pieceNextPosition[1].replace('rank_', '');
         movingPiece.updatePosition(pieceNextPosition[0], pieceNextPosition[1]);
-        //console.log('Initiated movePiece() with ' + chessboardModel[chessboardModel.selectedPiece[0]][chessboardModel.selectedPiece[1]]);
         chessboardModel.selectedPiece = "";
-    }
-};
+    };
+
+    chessboardModel.showPath = (i, possiblePositionElement, possiblePosition) => {
+        // Save variables for reverting the color back
+        chessboardModel.possiblePathPlaceColor[i] = possiblePositionElement.style.backgroundColor;
+        chessboardModel.possiblePathPlace[i] = possiblePosition;
+
+        // Set highlighting color
+        let color = (chessboardModel.possiblePathPlaceColor[i] === "rgb(7, 162, 7)") ? "rgb(187, 0, 0)" : "rgb(223, 0, 0)";
+        possiblePositionElement.style.backgroundColor = color;
+    };
+}; 
