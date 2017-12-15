@@ -11,11 +11,17 @@
             width: 900px;
             font-size: 80px;
             text-align: center;
-            line-height: 110px;
+            line-height: 105px;
+        }
+
+        #chessboard > div > div{
+            transition: .2s;
         }
 
         #chessboard > div > div:hover {
             cursor: pointer;
+            font-size: 110%;
+            transition: .2s;
         }
 
         #chessboard ::selection {
@@ -57,6 +63,7 @@
             margin: 0;
             background-color: #eeeeee;
             display: flex;
+            font-family: sans-serif;
         }
     </style>
     <title>Chess game</title>
@@ -71,7 +78,7 @@
 
 </div>
 <div id="sidebar">
-    <h1>Info:</h1>
+    <h1>History:</h1>
     <p id="gameInfo"></p>
 </div>
 </body>
