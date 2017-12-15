@@ -4,7 +4,7 @@
 
 const chessboardModel = {};
 
-chessboardModel.init = () => {
+chessboardModel.init = (playerColor) => {
     chessboardModel.files = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; // Horizontal rows
     chessboardModel.ranks = [1, 2, 3, 4, 5, 6, 7, 8]; // Vertical rows
 
@@ -34,7 +34,7 @@ chessboardModel.init = () => {
     chessboardModel.possiblePathPlaceColor = [''];
 
     // Your side
-    chessboardModel.player = 'white';
+    chessboardModel.player = playerColor;
     document.getElementById("gameInfo").innerHTML += "You're playing as " + chessboardModel.player + '<br>';
 
 
@@ -113,55 +113,78 @@ chessboardModel.init = () => {
                 }
             }
 
-            //if (this.color === "white") {
+            const checkIfPossible = (possibleFileNum, possibleRank) => {
+                if (possibleFileNum <= 7 && possibleFileNum >= 0 && possibleRank >= 1 && possibleRank <= 8) {
+                    let possibleFile = chessboardModel.files[possibleFileNum];
+                    let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
+                    let possiblePositionElement = document.getElementById(possiblePositionId);
+                    if (possiblePositionElement.className === "") { // Path is empty
+                        chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
+                        chessboardModel.showPath(possiblePositionElement, possiblePositionId);
+                        return true;
+                    } else { // Piece is on path
+                        let possiblePositionPiece = possiblePositionElement.className.split(" ");
+                        possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
+                        if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
+                            chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
+                            chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
+                            return false;
+                        } else { // Allied piece on path
+                            return false;
+                        }
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            if (this.color === "white") {
 
                 if (this.moveSet.forward) {
-                    for (let i = 1; i <= this.moveSet.forward; i++) {
-                        let possibleRank = parseInt(this.rank) + i;
-                        if (possibleRank <= 8) {
-                            let possiblePositionId = 'file_' + this.file + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = this.file + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = this.file + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
+                    if (this.piece === 'Pawn') {
+                        for (let i = 1; i <= this.moveSet.forward; i++) {
+                            let possibleRank = this.rank + i;
+                            let possibleFileNum = fileArrayPosition;
+                            if (possibleFileNum <= 7 && possibleFileNum >= 0 && possibleRank >= 1 && possibleRank <= 8) {
+                                let possibleFile = chessboardModel.files[possibleFileNum];
+                                let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
+                                let possiblePositionElement = document.getElementById(possiblePositionId);
+                                if (possiblePositionElement.className === "") { // Path is empty
+                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
+                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId);
                                 }
                             }
-                        } else {
-                            break;
+                        }
+                        const pawnMovement = (possibleFileNum, possibleRank) => {
+                            if (possibleFileNum <= 7 && possibleFileNum >= 0 && possibleRank >= 1 && possibleRank <= 8) {
+                                let possibleFile = chessboardModel.files[possibleFileNum];
+                                let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
+                                let possiblePositionElement = document.getElementById(possiblePositionId);
+                                if (possiblePositionElement.className === "") { // Path is empty
+                                } else { // Piece is on path
+                                    let possiblePositionPiece = possiblePositionElement.className.split(" ");
+                                    possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
+                                    if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
+                                        chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
+                                        chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
+                                    }
+                                }
+                            }
+                        }
+                        pawnMovement(fileArrayPosition + 1, this.rank + 1);
+                        pawnMovement(fileArrayPosition - 1, this.rank + 1);
+                    } else {
+                        for (let i = 1; i <= this.moveSet.forward; i++) {
+                            if (!checkIfPossible(fileArrayPosition, this.rank + i)) {
+                                break;
+                            }
                         }
                     }
                 }
 
                 if (this.moveSet.backward) {
                     for (let i = 1; i <= this.moveSet.backward; i++) {
-                        let possibleRank = parseInt(this.rank) - i;
-                        if (possibleRank >= 1) {
-                            let possiblePositionId = 'file_' + this.file + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = this.file + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = this.file + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition, this.rank - i)) {
                             break;
                         }
                     }
@@ -169,26 +192,7 @@ chessboardModel.init = () => {
 
                 if (this.moveSet.left) {
                     for (let i = 1; i <= this.moveSet.left; i++) {
-                        let possibleFileNum = fileArrayPosition - i;
-                        let possibleFile = chessboardModel.files[possibleFileNum];
-                        if (possibleFileNum >= 0) {
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + this.rank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + this.rank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + this.rank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition - i, this.rank)) {
                             break;
                         }
                     }
@@ -196,26 +200,7 @@ chessboardModel.init = () => {
 
                 if (this.moveSet.right) {
                     for (let i = 1; i <= this.moveSet.right; i++) {
-                        let possibleFileNum = fileArrayPosition + i;
-                        let possibleFile = chessboardModel.files[possibleFileNum];
-                        if (possibleFileNum <= 7) {
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + this.rank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + this.rank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + this.rank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition + i, this.rank)) {
                             break;
                         }
                     }
@@ -223,27 +208,7 @@ chessboardModel.init = () => {
 
                 if (this.moveSet.forward_left) {
                     for (let i = 1; i <= this.moveSet.forward_left; i++) {
-                        let possibleFileNum = fileArrayPosition - i;
-                        let possibleFile = chessboardModel.files[possibleFileNum];
-                        let possibleRank = parseInt(this.rank) + i;
-                        if (possibleFileNum >= 0 && possibleRank <= 8) {
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition - i, this.rank + i)) {
                             break;
                         }
                     }
@@ -251,27 +216,7 @@ chessboardModel.init = () => {
 
                 if (this.moveSet.forward_right) {
                     for (let i = 1; i <= this.moveSet.forward_right; i++) {
-                        let possibleFileNum = fileArrayPosition + i;
-                        let possibleFile = chessboardModel.files[possibleFileNum];
-                        let possibleRank = parseInt(this.rank) + i;
-                        if (possibleFileNum <= 7 && possibleRank <= 8) {
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition + i, this.rank + i)) {
                             break;
                         }
                     }
@@ -279,27 +224,7 @@ chessboardModel.init = () => {
 
                 if (this.moveSet.backward_left) {
                     for (let i = 1; i <= this.moveSet.backward_left; i++) {
-                        let possibleFileNum = fileArrayPosition - i;
-                        let possibleFile = chessboardModel.files[possibleFileNum];
-                        let possibleRank = parseInt(this.rank) - i;
-                        if (possibleFileNum >= 0 && possibleRank >= 1) {
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition - i, this.rank - i)) {
                             break;
                         }
                     }
@@ -307,51 +232,13 @@ chessboardModel.init = () => {
 
                 if (this.moveSet.backward_right) {
                     for (let i = 1; i <= this.moveSet.backward_right; i++) {
-                        let possibleFileNum = fileArrayPosition + i;
-                        let possibleFile = chessboardModel.files[possibleFileNum];
-                        let possibleRank = parseInt(this.rank) - i;
-                        if (possibleFileNum <= 7 && possibleRank >= 1) {
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                    break;
-                                } else { // Allied piece on path
-                                    break;
-                                }
-                            }
-                        } else {
+                        if (!checkIfPossible(fileArrayPosition + i, this.rank - i)) {
                             break;
                         }
                     }
                 }
 
                 if (this.moveSet.knightMove) {
-                    const checkIfPossible = (possibleFileNum, possibleRank) => {
-                        if (possibleFileNum <= 7 && possibleFileNum >= 0 && possibleRank >= 1 && possibleRank <= 8) {
-                            let possibleFile = chessboardModel.files[possibleFileNum];
-                            let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
-                            let possiblePositionElement = document.getElementById(possiblePositionId);
-                            if (possiblePositionElement.className === "") { // Path is empty
-                                chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                chessboardModel.showPath(possiblePositionElement, possiblePositionId);
-                            } else { // Piece is on path
-                                let possiblePositionPiece = possiblePositionElement.className.split(" ");
-                                possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
-                                if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
-                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
-                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
-                                }
-                            }
-                        }
-                    }
                     // right + 1, up + 2
                     checkIfPossible(fileArrayPosition + 1, this.rank + 2);
                     // right + 2, up + 1
@@ -367,13 +254,128 @@ chessboardModel.init = () => {
                     // left + 1, down + 2
                     checkIfPossible(fileArrayPosition - 1, this.rank - 2);
                     // left + 2, down + 1
-                    checkIfPossible(fileArrayPosition - 2, this.rank - 1); 
+                    checkIfPossible(fileArrayPosition - 2, this.rank - 1);
                 }
 
-            //} else {
-               // console.log('Code not yet implemented');
+            } else { // black side
+                if (this.moveSet.forward) {
+                    if (this.piece === 'Pawn') {
+                        for (let i = 1; i <= this.moveSet.forward; i++) {
+                            let possibleRank = this.rank - i;
+                            let possibleFileNum = fileArrayPosition;
+                            if (possibleFileNum <= 7 && possibleFileNum >= 0 && possibleRank >= 1 && possibleRank <= 8) {
+                                let possibleFile = chessboardModel.files[possibleFileNum];
+                                let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
+                                let possiblePositionElement = document.getElementById(possiblePositionId);
+                                if (possiblePositionElement.className === "") { // Path is empty
+                                    chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
+                                    chessboardModel.showPath(possiblePositionElement, possiblePositionId);
+                                }
+                            }
+                        }
+                        const pawnMovement = (possibleFileNum, possibleRank) => {
+                            if (possibleFileNum <= 7 && possibleFileNum >= 0 && possibleRank >= 1 && possibleRank <= 8) {
+                                let possibleFile = chessboardModel.files[possibleFileNum];
+                                let possiblePositionId = 'file_' + possibleFile + '-rank_' + possibleRank;
+                                let possiblePositionElement = document.getElementById(possiblePositionId);
+                                if (possiblePositionElement.className === "") { // Path is empty
+                                } else { // Piece is on path
+                                    let possiblePositionPiece = possiblePositionElement.className.split(" ");
+                                    possiblePositionPiece = chessboardModel[possiblePositionPiece[0]][possiblePositionPiece[1]];
+                                    if (possiblePositionPiece.color !== chessboardModel.player) { // Enemy piece is on path
+                                        chessboardModel.possiblePathPlace[chessboardModel.possiblePathPlace.length] = possibleFile + possibleRank;
+                                        chessboardModel.showPath(possiblePositionElement, possiblePositionId, true);
+                                    }
+                                }
+                            }
+                        }
+                        pawnMovement(fileArrayPosition - 1, this.rank - 1);
+                        pawnMovement(fileArrayPosition + 1, this.rank - 1);
+                    } else {
+                        for (let i = 1; i <= this.moveSet.forward; i++) {
+                            if (!checkIfPossible(fileArrayPosition, this.rank - i)) {
+                                break;
+                            }
+                        }
+                    }
+                }
 
-           // }
+                if (this.moveSet.backward) {
+                    for (let i = 1; i <= this.moveSet.backward; i++) {
+                        if (!checkIfPossible(fileArrayPosition, this.rank + i)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.left) {
+                    for (let i = 1; i <= this.moveSet.left; i++) {
+                        if (!checkIfPossible(fileArrayPosition + i, this.rank)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.right) {
+                    for (let i = 1; i <= this.moveSet.right; i++) {
+                        if (!checkIfPossible(fileArrayPosition - i, this.rank)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.forward_left) {
+                    for (let i = 1; i <= this.moveSet.forward_left; i++) {
+                        if (!checkIfPossible(fileArrayPosition + i, this.rank - i)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.forward_right) {
+                    for (let i = 1; i <= this.moveSet.forward_right; i++) {
+                        if (!checkIfPossible(fileArrayPosition - i, this.rank - i)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.backward_left) {
+                    for (let i = 1; i <= this.moveSet.backward_left; i++) {
+                        if (!checkIfPossible(fileArrayPosition + i, this.rank + i)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.backward_right) {
+                    for (let i = 1; i <= this.moveSet.backward_right; i++) {
+                        if (!checkIfPossible(fileArrayPosition - i, this.rank + i)) {
+                            break;
+                        }
+                    }
+                }
+
+                if (this.moveSet.knightMove) {
+                    // right + 1, up + 2
+                    checkIfPossible(fileArrayPosition + 1, this.rank + 2);
+                    // right + 2, up + 1
+                    checkIfPossible(fileArrayPosition + 2, this.rank + 1);
+                    // right + 1, down + 2
+                    checkIfPossible(fileArrayPosition + 1, this.rank - 2);
+                    // right + 2, down + 1
+                    checkIfPossible(fileArrayPosition + 2, this.rank - 1);
+                    // left + 1, up + 2
+                    checkIfPossible(fileArrayPosition - 1, this.rank + 2);
+                    // left + 2, up + 1
+                    checkIfPossible(fileArrayPosition - 2, this.rank + 1);
+                    // left + 1, down + 2
+                    checkIfPossible(fileArrayPosition - 1, this.rank - 2);
+                    // left + 2, down + 1
+                    checkIfPossible(fileArrayPosition - 2, this.rank - 1);
+                }
+
+            }
         } // end ShowPossiblePath()
 
     }

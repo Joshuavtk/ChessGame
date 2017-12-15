@@ -5,7 +5,7 @@
 const chessboardController = {};
 
 chessboardController.init = () => {
-    chessboardModel.init();
+    chessboardModel.init('black');
     chessboardView.init();
     chesspieceView.init();
 
