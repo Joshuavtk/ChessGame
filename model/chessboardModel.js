@@ -68,7 +68,7 @@ chessboardModel.init = (playerColor) => {
             this.place.innerHTML = this.appearance;
 
             // Log the position change
-            let logMessage = '<div class="log-message">Moved <b>' + this.color + ' ' + this.piece + '</b> to: <b>' + newFile + newRank + '</b></div>';
+            let logMessage = '<div class="log-message">' + this.appearance + ' → <b>' + newFile + newRank + '</b></div>';
             document.getElementById("gameInfo").innerHTML += (logMessage);
 
             // Scroll log down to bottom
