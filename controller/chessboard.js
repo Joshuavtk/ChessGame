@@ -5,11 +5,11 @@
 const chessboardController = {};
 
 chessboardController.init = () => {
-    chessboardModel.init('black');
+    document.getElementById('wrapper').innerHTML = "";
+    document.getElementById('gameInfo').innerHTML = "";
+    chessboardModel.init('white');
     chessboardView.init();
     chesspieceView.init();
-
 };
 
 addEventListener("load", chessboardController.init);
-

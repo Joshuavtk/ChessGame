@@ -36,9 +36,9 @@ chessboardView.init = () => {
                 rank.style.height = "100px";
                 rank.style.width = "100px";
                 if (z % 2 === 0 && i % 2 === 0 || z % 2 === 1 && i % 2 === 1) {
-                    rank.style.backgroundColor = "rgb(7, 162, 7)";
+                    rank.style.backgroundColor = "rgb(255, 164, 0)";
                 } else {
-                    rank.style.backgroundColor = "rgb(239, 239, 127)";
+                    rank.style.backgroundColor = "rgb(255, 255, 170)";
                 }
                 rank.onclick = () => {
                     chessboardModel.selectPiece(rank.className, rank.id)
@@ -59,12 +59,11 @@ chessboardView.init = () => {
             rankLabel.className = "rankLabel";
             rankLabel.style.position = "absolute";
             rankLabel.style.top = i * 100 + "px";
-            rankLabel.style.width = "100px";
             rankLabel.style.left = "800px";
             rankLabel.innerHTML = 8 - i;
             document.getElementById("chessboard").appendChild(rankLabel);
         }
-    } else {
+    } else { // playercolor = black
         for (let i = 0; i < files.length; i++) {
             let file = document.createElement("div");
             file.id = "file_" + files[7 - i];
@@ -84,9 +83,9 @@ chessboardView.init = () => {
                 rank.style.height = "100px";
                 rank.style.width = "100px";
                 if (z % 2 === 0 && i % 2 === 0 || z % 2 === 1 && i % 2 === 1) {
-                    rank.style.backgroundColor = "rgb(7, 162, 7)";
+                    rank.style.backgroundColor = "rgb(255, 164, 0)";
                 } else {
-                    rank.style.backgroundColor = "rgb(239, 239, 127)";
+                    rank.style.backgroundColor = "rgb(255, 255, 170)";
                 }
                 rank.onclick = () => {
                     chessboardModel.selectPiece(rank.className, rank.id)
@@ -107,7 +106,6 @@ chessboardView.init = () => {
             rankLabel.className = "rankLabel";
             rankLabel.style.position = "absolute";
             rankLabel.style.top = (7 - i) * 100 + "px";
-            rankLabel.style.width = "100px";
             rankLabel.style.left = "800px";
             rankLabel.innerHTML = 8 - i;
             document.getElementById("chessboard").appendChild(rankLabel);

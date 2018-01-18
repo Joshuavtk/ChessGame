@@ -21,7 +21,6 @@
         #chessboard > div > div:hover {
             cursor: pointer;
             font-size: 110%;
-            transition: .2s;
         }
 
         #chessboard ::selection {
@@ -33,7 +32,7 @@
         }
 
         #sidebar {
-            width: 260px;
+            width: 280px;
             height: 800px;
             background-color: lightgreen;
             overflow-y: scroll;
@@ -45,8 +44,13 @@
             text-align: center;
         }
         .log-message {
+            text-align: left;
             float: left;
             width: 50%;
+        }
+        
+        .log-piece {
+            font-size: 130%;
         }
 
         .fileLabel {
@@ -73,6 +77,7 @@
     </style>
     <title>Chess game</title>
     <script src="model/chessboardModel.js"></script>
+    <script src="model/chesspieceModel.js"></script>
     <script src="view/chessboardView.js"></script>
     <script src="view/chesspieceView.js"></script>
     <script src="controller/chessboard.js"></script>
@@ -83,7 +88,6 @@
 
 </div>
 <div id="sidebar">
-    <h1>History:</h1>
     <p id="gameInfo"></p>
 </div>
 </body>
